@@ -1,25 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Firewall Grid</title>
+  <meta charset="UTF-8">
+  <title>Firewall Request Grid</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    /* CSS styles */
+    table { border-collapse: collapse; width: 100%; font-family: Arial, sans-serif; }
+    th, td { border: 1px solid #ccc; padding: 8px; }
+    th { background-color: #f5f5f5; }
+    input, select { width: 100%; box-sizing: border-box; }
   </style>
 </head>
 <body>
+  <h2>Firewall Access Request Grid</h2>
   <div id="firewall-grid-container"></div>
-
   <button id="submit-btn">Submit</button>
 
   <script>
     $(document).ready(function () {
-      // jQuery to build table
-    });
+      const columns = ["Source IP", "Destination IP", "Port", "Protocol", "Justification"];
+      const protocols = ["TCP", "UDP", "ICMP", "Other"];
+      const rows = 10;
 
-    $('#submit-btn').on('click', function () {
-      // collect data and submit
+      let table = $('<table></table>');
+      let headerRow = $('<tr></tr>');
+      $.each(columns, function (_, col) {
+          headerRow.append(`<th>${col}</th>`);
+      });
+      table.append(headerRow);
+
+      for (let i = 0; i < rows; i++) {
+          let row = $('<tr></tr>');
+          for (let j = 0; j < columns.length; j++) {
+              let input;
+              if (columns[j] === "Protocol") {
+                  input = $('<select name="protocol[]"></select>');
+                  $.each(protocols, function (_, proto) {
+                      input.append(`<option value="${proto}">${proto}</option>`);
+                  });
+              } else {
+                  input = $(`<input type="text" name="${columns[j].toLowerCase().replace(/\s+/g, '_')}[]" />`);
+              }
+              row.append($('<td></td>').append(input));
+          }
+          table.append(row);
+      }
+
+      $('#firewall-grid-container').append(table);
+
+      $('#submit-btn').on('click', function () {
+        alert("Form submission logic goes here");
+        // In next steps we will connect it to SharePoint via Power Automate
+      });
     });
   </script>
 </body>
 </html>
+
